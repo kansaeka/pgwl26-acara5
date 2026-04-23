@@ -224,20 +224,73 @@
             drawnItems.addLayer(layer);
         });
 
-        // Marker contoh
-        var marker = L.marker([-7.7956, 110.3695]).addTo(map);
-        marker.bindPopup("<b>Kota Yogyakarta</b><br>Pusat Provinsi DIY").openPopup();
 
-        // Layer control contoh
-        var satellite = L.tileLayer(
-            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-        );
+        // GeoJSON Point
+        var points = L.geoJSON(null, {
+            onEachFeature: function(feature, layer) {
+                var popup_content =
+                    "Nama: " + feature.properties.name + "<br>" +
+                    "Deskripsi: " + feature.properties.description + "<br>" +
+                    "Dibuat: " + feature.properties.created_at + "<br>" +
+                    "Diupdate: " + feature.properties.updated_at + "<br>";
 
+                layer.bindPopup(popup_content);
+            }
+        });
+
+        $.getJSON("{{ route('geojson.points') }}", function(data) {
+            points.addData(data);
+            map.addLayer(points);
+        });
+
+        // GeoJSON Polyline
+        var polylines = L.geoJSON(null, {
+            onEachFeature: function(feature, layer) {
+                var popup_content =
+                    "Nama: " + feature.properties.name + "<br>" +
+                    "Deskripsi: " + feature.properties.description + "<br>" +
+                    "Dibuat: " + feature.properties.created_at + "<br>" +
+                    "Diupdate: " + feature.properties.updated_at + "<br>";
+
+                layer.bindPopup(popup_content);
+            }
+        });
+
+        $.getJSON("{{ route('geojson.polylines') }}", function(data) {
+            polylines.addData(data);
+            map.addLayer(polylines);
+        });
+
+        // GeoJSON Polygon
+        var polygons = L.geoJSON(null, {
+            onEachFeature: function(feature, layer) {
+                var popup_content =
+                    "Nama: " + feature.properties.name + "<br>" +
+                    "Deskripsi: " + feature.properties.description + "<br>" +
+                    "Dibuat: " + feature.properties.created_at + "<br>" +
+                    "Diupdate: " + feature.properties.updated_at + "<br>";
+
+                layer.bindPopup(popup_content);
+            }
+        });
+
+        $.getJSON("{{ route('geojson.polygons') }}", function(data) {
+            polygons.addData(data);
+            map.addLayer(polygons);
+        });
+
+        // Control Layer
         var baseMaps = {
-            "OpenStreetMap": map._layers[Object.keys(map._layers)[0]],
-            "Satellite": satellite
+
         };
 
-        L.control.layers(baseMaps).addTo(map);
+        var overlayMaps = {
+            "Points": points,
+            "Polylines": polylines,
+            "Polygons": polygons,
+        };
+
+        var controllayer = L.control.layers(baseMaps, overlayMaps);
+        controllayer.addTo(map);
     </script>
 @endsection
