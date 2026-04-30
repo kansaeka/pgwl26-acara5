@@ -36,7 +36,7 @@
                     <h5 class="modal-title">Input Point</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('points.store') }}" method="post">
+                <form action="{{ route('points.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -52,6 +52,15 @@
                             <label for="geometry_point" class="form-label">Geometry</label>
                             <textarea class="form-control" id="geometry_point" name="geometry_point" rows="3"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <input class="form-control" type="file" id="image" name="image"
+                            onchange="document.getElementById('preview-image-point').src = window.URL.createObjectURL(this.files[0])">
+                        </div>
+                        <div class="mb-3" style="text-align: center;">
+                            <img id="preview-image-point" src="" alt="Preview Image" style="max-width: 100%; height: auto;">
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -70,7 +79,7 @@
                     <h5 class="modal-title">Input Polyline</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('polylines.store') }}" method="post">
+                <form action="{{ route('polylines.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -85,6 +94,14 @@
                         <div class="mb-3">
                             <label for="geometry_polylines" class="form-label">Geometry</label>
                             <textarea class="form-control" id="geometry_polylines" name="geometry_polylines" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <input class="form-control" type="file" id="image" name="image"
+                            onchange="document.getElementById('preview-image-polylines').src = window.URL.createObjectURL(this.files[0])">
+                        </div>
+                        <div class="mb-3" style="text-align: center;">
+                            <img id="preview-image-polylines" src="" alt="Preview Image" style="max-width: 100%; height: auto;">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -104,7 +121,7 @@
                     <h5 class="modal-title">Input Polygon</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('polygons.store') }}" method="post">
+                <form action="{{ route('polygons.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -119,6 +136,14 @@
                         <div class="mb-3">
                             <label for="geometry_polygons" class="form-label">Geometry</label>
                             <textarea class="form-control" id="geometry_polygons" name="geometry_polygons" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <input class="form-control" type="file" id="image" name="image"
+                            onchange="document.getElementById('preview-image-polygons').src = window.URL.createObjectURL(this.files[0])">
+                        </div>
+                        <div class="mb-3" style="text-align: center;">
+                            <img id="preview-image-polygons" src="" alt="Preview Image" style="max-width: 100%; height: auto;">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -232,7 +257,8 @@
                     "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
                     "Dibuat: " + feature.properties.created_at + "<br>" +
-                    "Diupdate: " + feature.properties.updated_at + "<br>";
+                    "Diupdate: " + feature.properties.updated_at + "<br>" +
+                    "<img src='{{ asset('storage/images') }}/" + feature.properties.image + "' alt='Image' style='max-width: 100%; height: auto;'>";
 
                 layer.bindPopup(popup_content);
             }
@@ -250,7 +276,8 @@
                     "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
                     "Dibuat: " + feature.properties.created_at + "<br>" +
-                    "Diupdate: " + feature.properties.updated_at + "<br>";
+                    "Diupdate: " + feature.properties.updated_at + "<br>" +
+                    "<img src='{{ asset('storage/images') }}/" + feature.properties.image + "' alt='Image' style='max-width: 100%; height: auto;'>";
 
                 layer.bindPopup(popup_content);
             }
@@ -268,7 +295,8 @@
                     "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
                     "Dibuat: " + feature.properties.created_at + "<br>" +
-                    "Diupdate: " + feature.properties.updated_at + "<br>";
+                    "Diupdate: " + feature.properties.updated_at + "<br>" +
+                    "<img src='{{ asset('storage/images') }}/" + feature.properties.image + "' alt='Image' style='max-width: 100%; height: auto;'>";
 
                 layer.bindPopup(popup_content);
             }

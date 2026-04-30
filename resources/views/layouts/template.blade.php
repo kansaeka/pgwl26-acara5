@@ -9,6 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
+    {{-- CDN CSS --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     @yield('styles')
 </head>
 <body>
@@ -16,21 +19,6 @@
 integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     @include('components.map-navbar')
     @yield('content')
-
-    <script>
-    // Inisialisasi peta dan atur tampilan ke koordinat Yogyakarta
-    var map = L.map('map').setView([-7.7956, 110.3695], 13);
-
-    // Tambahkan tile layer dari OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    // Tambahkan marker di pusat Kota Yogyakarta
-    L.marker([-7.7956, 110.3695]).addTo(map)
-        .bindPopup('<b>Halo, Yogyakarta!</b><br>Ini adalah pusat Kota Yogyakarta.')
-        .openPopup();
-</script>
     @yield('scripts')
 
     @include('components.toast')

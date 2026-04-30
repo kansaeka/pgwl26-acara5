@@ -42,19 +42,37 @@ class PolygonsController extends Controller
                 'geometry_polygons' => 'required',
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10048',
             ],
             [
                 'geometry_polygons.required' => 'Field geometry polygons harus diisi.',
                 'name.required' => 'Field name harus diisi.',
                 'description.required' => 'Field description harus diisi.',
+                'description.string' => 'Field description harus berupa string.',
+
             ]
         );
+
+        //Create directory if not exist
+        if (!is_dir('storage/images')) {
+            mkdir('./storage/images', 0777);
+        }
+
+        //Get file image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name_image = time() . "_polygon." . strtolower($image->getClientOriginalExtension());
+            $image->move('storage/images', $name_image);
+        } else {
+            $name_image = null;
+        }
 
         // 2. Persiapan Data (Gunakan DB::raw agar masuk ke kolom spasial PostGIS)
         $data = [
             'name' => $request->name,
             'description' => $request->description,
             'geom' => DB::raw("ST_GeomFromText('" . $request->geometry_polygons . "', 4326)"),
+            'image' => $name_image,
         ];
 
         // 3. Simpan data ke database
