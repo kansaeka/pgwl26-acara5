@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('styles')
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.8/css/dataTables.dataTables.css">
     <style>
         body {
             background-color: #f5f7fb;
@@ -48,58 +48,126 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="mb-0">Tabel Data</h3>
+                <h3 class="mb-0">Tabel Data Point</h3>
             </div>
 
             <div class="card-body">
 
-                <table class="table table-bordered table-striped table-hover align-middle">
+                <table class="table table-bordered table-striped table-hover align-middle" id="tabeldatapoint">
 
                     <thead>
                         <tr>
                             <th style="width:60px;">No</th>
                             <th>Nama</th>
                             <th>Deskripsi</th>
-                            <th style="width:120px;">Gambar</th>
+                            <th>Foto</th>
+                            <th>Tanggal Dibuat</th>
                         </tr>
                     </thead>
 
                     <tbody>
+                        @php
+                            $no = 1;
+                        @endphp
+                        @foreach ($points as $p)
+                            <tr>
+                                <td>{{ $no++ }}</td>
+                                <td>{{ $p['name'] }}</td>
+                                <td>{{ $p['description'] }}</td>
+                                <td>
+                                    <img src="{{ asset('storage/images' .'/'. $p['image']) }}" alt=" " width="200" class="d-block mx-auto">
+                                </td>
+                                <td>{{ $p['created_at'] }}</td>
+                            </tr>
+                        @endforeach
 
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td>Bundaran UGM</td>
-                            <td>Jl. Cik Di Tiro, Sagan, Caturtunggal, Kec. Depok, Kabupaten Sleman</td>
-                            <td class="text-center">-</td>
-                        </tr>
 
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td>Gunung Merapi</td>
-                            <td>Hargobinangun, Pakem, Kabupaten Sleman</td>
-                            <td class="text-center">-</td>
-                        </tr>
+                    </tbody>
 
-                        <tr>
-                            <td class="text-center">3</td>
-                            <td>Tugu Yogyakarta</td>
-                            <td>Jl. Jend. Sudirman, Gowongan, Kec. Jetis, Kota Yogyakarta</td>
-                            <td class="text-center">-</td>
-                        </tr>
+                </table>
 
-                        <tr>
-                            <td class="text-center">4</td>
-                            <td>Jalan Malioboro</td>
-                            <td>Sosromenduran, Gedong Tengen, Kota Yogyakarta</td>
-                            <td class="text-center">-</td>
-                        </tr>
+            </div>
+        </div>
 
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="mb-0">Tabel Data Polyline</h3>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered table-striped table-hover align-middle" id="tabeldatapolyline">
+
+                    <thead>
                         <tr>
-                            <td class="text-center">5</td>
-                            <td>Alun-alun Utara</td>
-                            <td>Gondomanan, Kota Yogyakarta</td>
-                            <td class="text-center">-</td>
+                            <th style="width:60px;">No</th>
+                            <th>Nama</th>
+                            <th>Deskripsi</th>
+                            <th>Foto</th>
+                            <th>Tanggal Dibuat</th>
                         </tr>
+                    </thead>
+
+                    <tbody>
+                        @php
+                            $no = 1;
+                        @endphp
+                        @foreach ($polylines as $p)
+                            <tr>
+                                <td>{{ $no++ }}</td>
+                                <td>{{ $p['name'] }}</td>
+                                <td>{{ $p['description'] }}</td>
+                                <td>
+                                    <img src="{{ asset('storage/images' .'/'. $p['image']) }}" alt=" " width="200" class="d-block mx-auto">
+                                </td>
+                                <td>{{ $p['created_at'] }}</td>
+                            </tr>
+                        @endforeach
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="mb-0">Tabel Data Polygon</h3>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered table-striped table-hover align-middle" id="tabeldatapolygon">
+
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">No</th>
+                            <th>Nama</th>
+                            <th>Deskripsi</th>
+                            <th>Foto</th>
+                            <th>Tanggal Dibuat</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @php
+                            $no = 1;
+                        @endphp
+                        @foreach ($polygons as $p)
+                            <tr>
+                                <td>{{ $no++ }}</td>
+                                <td>{{ $p['name'] }}</td>
+                                <td>{{ $p['description'] }}</td>
+                                <td>
+                                    <img src="{{ asset('storage/images' .'/'. $p['image']) }}" alt=" " width="200" class="d-block mx-auto">
+                                </td>
+                                <td>{{ $p['created_at'] }}</td>
+                            </tr>
+                        @endforeach
+
 
                     </tbody>
 
@@ -109,4 +177,18 @@
         </div>
 
     </div>
-    @endsection
+@endsection
+
+@section('scripts')
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://cdn.datatables.net/2.3.8/js/dataTables.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            new DataTable('#tabeldatapoint');
+            new DataTable('#tabeldatapolyline');
+            new DataTable('#tabeldatapolygon');
+        });
+    </script>
+@endsection

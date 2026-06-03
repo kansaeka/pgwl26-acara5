@@ -36,7 +36,7 @@ class PolygonsController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input (Pastikan menggunakan 'geometry_polygons' sesuai modal)
+        // 1. Validasi Input (Pastikan menggunakan 'geometry_polygons' sesuai modal tambah)
         $request->validate(
             [
                 'geometry_polygons' => 'required',
@@ -49,7 +49,6 @@ class PolygonsController extends Controller
                 'name.required' => 'Field name harus diisi.',
                 'description.required' => 'Field description harus diisi.',
                 'description.string' => 'Field description harus berupa string.',
-
             ]
         );
 
@@ -76,14 +75,13 @@ class PolygonsController extends Controller
         ];
 
         // 3. Simpan data ke database
-        // Menggunakan try-catch agar jika format koordinat salah, aplikasi tidak crash (Error 500)
         try {
             $this->polygon->create($data);
             return redirect()->route('peta')->with('success', 'Data polygon berhasil disimpan!');
         } catch (\Exception $e) {
             return redirect()->route('peta')->with('error', 'Gagal menyimpan ke database: ' . $e->getMessage());
         }
-    } // <--- KURUNG PENUTUP FUNGSI STORE SEKARANG SUDAH BENAR
+    }
 
     /**
      * Display the specified resource.
@@ -98,7 +96,11 @@ class PolygonsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data = [
+            'title' => 'Edit Polygon',
+            'id' => $id,
+        ];
+        return view('map-edit-polygon', $data);
     }
 
     /**
@@ -106,7 +108,56 @@ class PolygonsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validasi input data update (Menangkap 'geometry' dari form blade edit)
+        $request->validate(
+            [
+                'geometry' => 'required',
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10048',
+            ],
+            [
+                'geometry.required' => 'Field geometry area (polygon) harus diisi.',
+                'name.required' => 'Field name harus diisi.',
+                'description.required' => 'Field description harus diisi.',
+            ]
+        );
+
+        // Cari data polygon berdasarkan ID
+        $polygon = $this->polygon->find($id);
+
+        if (!$polygon) {
+            return redirect()->route('peta')->with('error', 'Data polygon tidak ditemukan!');
+        }
+
+        $name_image = $polygon->image;
+
+        // Ambil file gambar baru jika diupload
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama dari server jika ada
+            if ($name_image != null && file_exists('./storage/images/' . $name_image)) {
+                unlink('./storage/images/' . $name_image);
+            }
+
+            $image = $request->file('image');
+            $name_image = time() . "_polygon." . strtolower($image->getClientOriginalExtension());
+            $image->move('storage/images', $name_image);
+        }
+
+        // Format ST_GeomFromText untuk update spasial PostGIS agar sama dengan store
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'geom' => DB::raw("ST_GeomFromText('" . $request->geometry . "', 4326)"),
+            'image' => $name_image,
+        ];
+
+        try {
+            $polygon->update($data);
+            return redirect()->route('peta')->with('success', 'Data polygon berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return redirect()->route('peta')->with('error', 'Gagal memperbarui database: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -114,6 +165,27 @@ class PolygonsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Cari data polygon berdasarkan id
+        $polygon = $this->polygon->find($id);
+
+        // Jika data tidak ditemukan
+        if (!$polygon) {
+            return redirect()->route('peta')->with('error', 'Data polygon tidak ditemukan!');
+        }
+
+        // Simpan nama gambar sebelum data dihapus
+        $image = $polygon->image;
+
+        // Hapus data dari database
+        if (!$polygon->delete()) {
+            return redirect()->route('peta')->with('error', 'Gagal menghapus data polygon!');
+        }
+
+        // Hapus file gambar jika ada
+        if ($image != null && file_exists('./storage/images/' . $image)) {
+            unlink('./storage/images/' . $image);
+        }
+
+        return redirect()->route('peta')->with('success', 'Data polygon berhasil dihapus!');
     }
 }

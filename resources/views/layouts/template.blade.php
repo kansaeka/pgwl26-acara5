@@ -19,9 +19,8 @@
 integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     @include('components.map-navbar')
     @yield('content')
-    @yield('scripts')
-
     @include('components.toast')
+    @yield('scripts')
 
 </body>
 </html>

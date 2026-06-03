@@ -13,16 +13,27 @@ class polylinesModel extends Model
     // Nama tabel di database
     protected $table = 'polylines';
 
-    // Kolom yang boleh diisi (Mass Assignment)
+    // Kolom yang boleh diisi (Mass Assignment) - Sudah Aman & Lengkap
     protected $fillable = [
         'name',
         'description',
-        'geom' // Nama kolom spasial di database
+        'geom', // Nama kolom spasial di database
+        'image'
     ];
 
-    public function geojson_polylines()
+    // PERBAIKAN: Menambahkan opsi parameter $id untuk mendukung filter maps edit garis tunggal
+    public function geojson_polylines($id = null)
     {
-        $polylines = $this->select(DB::raw('id, ST_AsGeoJSON(geom) as geojson, name, description, image, created_at, updated_at'))->get();
+        // 1. Inisialisasi query select dasar PostGIS
+        $query = $this->select(DB::raw('id, ST_AsGeoJSON(geom) as geojson, name, description, image, created_at, updated_at'));
+
+        // 2. Jika ID dilemparkan dari Controller, filter query khusus untuk ID tersebut saja
+        if ($id !== null) {
+            $query->where('id', $id);
+        }
+
+        // 3. Eksekusi query untuk mendapatkan data
+        $polylines = $query->get();
 
         $geojson = [
             'type' => 'FeatureCollection',

@@ -8,11 +8,21 @@ use Illuminate\Support\Facades\DB;
 class polygonModel extends Model
 {
     protected $table = 'polygons';
-    protected $guarded = ['id'];
+    protected $guarded = ['id']; // Sudah benar & aman untuk proses update
 
-    public function geojson_polygons()
+    // PERBAIKAN: Menambahkan opsi parameter $id agar bisa mengambil semua atau satu data saja
+    public function geojson_polygons($id = null)
     {
-        $polygons = $this->select(DB::raw('id, ST_AsGeoJSON(geom) as geojson, name, description, image, created_at, updated_at'))->get();
+        // 1. Mulai query dasar select spasial PostGIS
+        $query = $this->select(DB::raw('id, ST_AsGeoJSON(geom) as geojson, name, description, image, created_at, updated_at'));
+
+        // 2. Jika ID dikirim (berarti dipanggil oleh halaman edit), filter berdasarkan ID tersebut
+        if ($id !== null) {
+            $query->where('id', $id);
+        }
+
+        // 3. Eksekusi ambil data dari database
+        $polygons = $query->get();
 
         $geojson = [
             'type' => 'FeatureCollection',
