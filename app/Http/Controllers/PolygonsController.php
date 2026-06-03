@@ -165,7 +165,7 @@ class PolygonsController extends Controller
      */
     public function destroy(string $id)
     {
-        // Cari data polygon
+        // Cari data polygon berdasarkan ID
         $polygon = $this->polygon->find($id);
 
         // Jika data tidak ditemukan

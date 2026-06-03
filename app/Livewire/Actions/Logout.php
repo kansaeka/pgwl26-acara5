@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Session;
 class Logout
 {
     /**
-     * Log the current user out of the application.
+     * Log the current user out of the map application.
      */
     public function __invoke()
     {
